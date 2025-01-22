@@ -9,6 +9,7 @@ export default function FormInput({
     type = 'text',
     error,
     register,
+    placeholder,
     className = '',
     ...props
 }) {
@@ -16,25 +17,31 @@ export default function FormInput({
     const isPassword = type === 'password';
 
     return (
-        <div className={className}>
-            <label htmlFor={id} className="block text-sm font-medium text-gray-900">
+        <div>
+            <label htmlFor={id} className="block text-sm font-medium text-secondary">
                 {label}
             </label>
-            <div className="mt-1 relative">
+            <div className="mt-1">
                 <input
                     id={id}
                     type={isPassword && showPassword ? 'text' : type}
-                    className={`
-            appearance-none block w-full px-3 py-2.5
-            border ${error ? 'border-red-300' : 'border-gray-300'}
-            rounded-md shadow-sm placeholder-gray-400
-            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-            text-gray-900
-            ${isPassword ? 'pr-10' : ''}
-            transition-colors
-          `}
                     {...register}
-                    {...props}
+                    placeholder={placeholder}
+                    className={`
+                        block w-full px-3 py-2 
+                        bg-background 
+                        border border-gray-300 
+                        rounded-md shadow-sm 
+                        placeholder-gray-400
+                        focus:outline-none 
+                        focus:ring-2 
+                        focus:ring-primary 
+                        focus:border-primary 
+                        text-secondary
+                        ${error ? 'border-red-300' : ''}
+                        ${isPassword ? 'pr-10' : ''}
+                        ${className}
+                    `}
                 />
                 {isPassword && (
                     <button
@@ -54,9 +61,7 @@ export default function FormInput({
                 )}
             </div>
             {error && (
-                <p className="mt-1 text-sm text-red-600" role="alert">
-                    {error}
-                </p>
+                <p className="mt-1 text-sm text-red-600">{error}</p>
             )}
         </div>
     );

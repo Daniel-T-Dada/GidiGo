@@ -75,7 +75,7 @@ export default function PassengerForm() {
                             type="button"
                             className="w-full inline-flex justify-center py-2.5 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-secondary hover:bg-gray-50 transition-colors"
                         >
-                            <FaFacebook className="h-5 w-5 mr-2 text-blue-600" />
+                            <FaFacebook className="h-5 w-5 mr-2 text-primary" />
                             <span>Facebook</span>
                         </motion.button>
                     </div>
@@ -96,6 +96,7 @@ export default function PassengerForm() {
                             register={register('fullName', { required: 'Full name is required' })}
                             error={errors.fullName?.message}
                             placeholder="John Doe"
+                            className="bg-background"
                         />
 
                         <FormInput
@@ -111,6 +112,7 @@ export default function PassengerForm() {
                             })}
                             error={errors.email?.message}
                             placeholder="you@example.com"
+                            className="bg-background"
                         />
 
                         <FormInput
@@ -126,6 +128,7 @@ export default function PassengerForm() {
                             })}
                             error={errors.phone?.message}
                             placeholder="08012345678"
+                            className="bg-background"
                         />
 
                         <FormInput
@@ -141,6 +144,7 @@ export default function PassengerForm() {
                             })}
                             error={errors.password?.message}
                             placeholder="••••••••"
+                            className="bg-background"
                         />
 
                         <div>

@@ -99,7 +99,7 @@ export default function LoginForm() {
                         type="button"
                         className="w-full inline-flex justify-center py-2.5 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                     >
-                        <FaFacebook className="h-5 w-5 mr-2 text-blue-600" />
+                        <FaFacebook className="h-5 w-5 mr-2 text-primary" />
                         <span>Facebook</span>
                     </motion.button>
                 </div>
@@ -143,7 +143,7 @@ export default function LoginForm() {
                                 <button
                                     type="button"
                                     onClick={() => setShowForgotPassword(false)}
-                                    className="text-sm font-medium text-gray-600 hover:text-gray-500"
+                                    className="text-sm font-medium text-secondary hover:text-accent"
                                 >
                                     Back to login
                                 </button>
@@ -151,7 +151,7 @@ export default function LoginForm() {
                                     whileHover={{ scale: 1.01 }}
                                     whileTap={{ scale: 0.99 }}
                                     type="submit"
-                                    className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                    className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-accent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                                 >
                                     Send reset link
                                 </motion.button>
@@ -161,7 +161,7 @@ export default function LoginForm() {
                 ) : (
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         <FormInput
-                            className='placeholder-accent'
+                            className='bg-background'
                             id="email"
                             label="Email address"
                             type="email"
@@ -177,6 +177,7 @@ export default function LoginForm() {
                         />
 
                         <FormInput
+                            className='bg-background'
                             id="password"
                             label="Password"
                             type="password"
@@ -185,7 +186,6 @@ export default function LoginForm() {
                             })}
                             error={errors.password?.message}
                             placeholder="••••••••"
-
                         />
 
                         <div className="flex items-center justify-between">
