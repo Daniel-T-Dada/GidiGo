@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "regions": ["fra1"],
+  "env": {
+    "NEXT_PUBLIC_API_URL": "PLACEHOLDER_API_URL",
+    "NEXT_PUBLIC_PUSHER_KEY": "PLACEHOLDER_PUSHER_KEY",
+    "NEXT_PUBLIC_PUSHER_CLUSTER": "PLACEHOLDER_PUSHER_CLUSTER",
+    "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY": "PLACEHOLDER_GOOGLE_MAPS_KEY"
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "PLACEHOLDER_API_URL/api/:path*"
+    }
+  ]
+}
