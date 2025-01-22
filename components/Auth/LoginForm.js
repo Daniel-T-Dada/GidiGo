@@ -10,6 +10,8 @@ import FormInput from './FormInput';
 import { authenticateUser } from '@/mockData/users';
 import { useStore } from '@/store/useStore';
 import toast from 'react-hot-toast';
+import { showToast } from '@/utils/toast';
+import Link from 'next/link';
 
 export default function LoginForm() {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -38,23 +40,26 @@ export default function LoginForm() {
     };
 
     const onSubmit = async (data) => {
-        setIsLoading(true);
-        setLoginError('');
         try {
+            // Show loading toast
+            const loadingToast = showToast.loading('Signing in...');
+
             const result = await authenticateUser(data.email, data.password);
             if (result.success) {
                 await handleRoleBasedRedirect(result.user);
             } else {
                 setLoginError(result.error);
-                toast.error(result.error);
+                showToast.error(result.error);
             }
+
+            // Success
+            showToast.dismiss(loadingToast);
+            showToast.success('Signed in successfully!');
         } catch (error) {
             console.error('Login failed:', error);
             const errorMessage = 'An unexpected error occurred. Please try again.';
             setLoginError(errorMessage);
-            toast.error(errorMessage);
-        } finally {
-            setIsLoading(false);
+            showToast.error(errorMessage);
         }
     };
 
@@ -156,6 +161,7 @@ export default function LoginForm() {
                 ) : (
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         <FormInput
+                            className='placeholder-blue-400'
                             id="email"
                             label="Email address"
                             type="email"
@@ -167,7 +173,7 @@ export default function LoginForm() {
                                 },
                             })}
                             error={errors.email?.message}
-                            placeholder="you@example.com"
+                            placeholder="your email"
                         />
 
                         <FormInput
@@ -184,23 +190,20 @@ export default function LoginForm() {
                         <div className="flex items-center justify-between">
                             <div className="flex items-center">
                                 <input
-                                    id="remember-me"
+                                    id="remember_me"
                                     type="checkbox"
                                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                                    {...register('rememberMe')}
                                 />
-                                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                                <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-700">
                                     Remember me
                                 </label>
                             </div>
 
-                            <button
-                                type="button"
-                                onClick={() => setShowForgotPassword(true)}
-                                className="text-sm font-medium text-blue-600 hover:text-blue-500"
-                            >
-                                Forgot your password?
-                            </button>
+                            <div className="text-sm">
+                                <Link href="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
+                                    Forgot your password?
+                                </Link>
+                            </div>
                         </div>
 
                         <div>

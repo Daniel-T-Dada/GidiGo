@@ -6,8 +6,11 @@ import { useForm } from 'react-hook-form';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
 import FormInput from './FormInput';
+import { showToast } from '@/utils/toast';
+import { useRouter } from 'next/navigation';
 
 export default function PassengerForm() {
+    const router = useRouter();
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [isLoading, setIsLoading] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
@@ -17,14 +20,19 @@ export default function PassengerForm() {
     }, []);
 
     const onSubmit = async (data) => {
-        setIsLoading(true);
         try {
-            // TODO: Implement API call to register user
-            console.log(data);
+            // Show loading toast
+            const loadingToast = showToast.loading('Creating your account...');
+
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // Success
+            showToast.dismiss(loadingToast);
+            showToast.success('Account created successfully!');
+            router.push('/login');
         } catch (error) {
-            console.error('Registration failed:', error);
-        } finally {
-            setIsLoading(false);
+            showToast.error('Failed to create account. Please try again.');
         }
     };
 

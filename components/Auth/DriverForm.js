@@ -106,7 +106,7 @@ export default function DriverForm() {
 
                             {/* Full Name */}
                             <div>
-                                <label htmlFor="fullName" className="block text-sm font-medium text-gray-800">
+                                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
                                     Full Name
                                 </label>
                                 <div className="mt-1">
@@ -115,7 +115,7 @@ export default function DriverForm() {
                                         type="text"
                                         placeholder="Enter your full name"
                                         {...register('fullName', { required: 'Full name is required' })}
-                                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     />
                                     {errors.fullName && (
                                         <p className="mt-1 text-sm text-red-600">{errors.fullName.message}</p>
@@ -125,7 +125,7 @@ export default function DriverForm() {
 
                             {/* Email */}
                             <div>
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-800">
+                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                                     Email address
                                 </label>
                                 <div className="mt-1">
@@ -140,7 +140,7 @@ export default function DriverForm() {
                                                 message: 'Invalid email address',
                                             },
                                         })}
-                                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     />
                                     {errors.email && (
                                         <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
@@ -150,7 +150,7 @@ export default function DriverForm() {
 
                             {/* Phone */}
                             <div>
-                                <label htmlFor="phone" className="block text-sm font-medium text-gray-800">
+                                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
                                     Phone number
                                 </label>
                                 <div className="mt-1">
@@ -165,7 +165,7 @@ export default function DriverForm() {
                                                 message: 'Please enter a valid phone number',
                                             },
                                         })}
-                                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     />
                                     {errors.phone && (
                                         <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
@@ -175,14 +175,14 @@ export default function DriverForm() {
 
                             {/* Password */}
                             <div>
-                                <label htmlFor="password" className="block text-sm font-medium text-gray-800">
+                                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                                     Password
                                 </label>
                                 <div className="mt-1">
                                     <input
                                         id="password"
                                         type="password"
-                                        placeholder="Enter your password"
+                                        placeholder="••••••••"
                                         {...register('password', {
                                             required: 'Password is required',
                                             minLength: {
@@ -190,7 +190,7 @@ export default function DriverForm() {
                                                 message: 'Password must be at least 8 characters',
                                             },
                                         })}
-                                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     />
                                     {errors.password && (
                                         <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
@@ -214,7 +214,7 @@ export default function DriverForm() {
                                         type="text"
                                         placeholder="e.g., Toyota"
                                         {...register('vehicleMake', { required: 'Vehicle make is required' })}
-                                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     />
                                     {errors.vehicleMake && (
                                         <p className="mt-1 text-sm text-red-600">{errors.vehicleMake.message}</p>
@@ -233,7 +233,7 @@ export default function DriverForm() {
                                         type="text"
                                         placeholder="e.g., Camry"
                                         {...register('vehicleModel', { required: 'Vehicle model is required' })}
-                                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     />
                                     {errors.vehicleModel && (
                                         <p className="mt-1 text-sm text-red-600">{errors.vehicleModel.message}</p>
@@ -258,7 +258,7 @@ export default function DriverForm() {
                                                 message: 'Vehicle must be 2015 or newer',
                                             },
                                         })}
-                                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     />
                                     {errors.vehicleYear && (
                                         <p className="mt-1 text-sm text-red-600">{errors.vehicleYear.message}</p>
@@ -277,7 +277,7 @@ export default function DriverForm() {
                                         type="text"
                                         placeholder="Enter license plate number"
                                         {...register('licensePlate', { required: 'License plate is required' })}
-                                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     />
                                     {errors.licensePlate && (
                                         <p className="mt-1 text-sm text-red-600">{errors.licensePlate.message}</p>
