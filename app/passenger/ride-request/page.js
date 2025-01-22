@@ -168,7 +168,10 @@ export default function RideRequestPage() {
                         bg-background rounded-t-3xl shadow-2xl 
                         transform transition-transform duration-300 ease-in-out 
                         max-h-[85vh] overflow-y-auto
-                        z-[1000]"
+                        z-[100]"
+                    style={{
+                        willChange: 'transform',
+                    }}
                 >
                     <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto my-3" />
                     <AnimatePresence mode="wait">
@@ -193,6 +196,9 @@ export default function RideRequestPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
                                 className="relative"
+                                style={{
+                                    isolation: 'isolate'
+                                }}
                             >
                                 <LocationSelector
                                     onLocationSelect={handleLocationSelect}

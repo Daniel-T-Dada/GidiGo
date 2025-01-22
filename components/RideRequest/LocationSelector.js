@@ -20,11 +20,17 @@ export default function LocationSelector({ onLocationSelect, onConfirm, location
     // Handle mounting state
     useEffect(() => {
         setMounted(true);
-        setFormData({
-            pickup: locations?.pickup?.name || '',
-            dropoff: locations?.dropoff?.name || ''
-        });
-    }, [locations?.pickup?.name, locations?.dropoff?.name]);
+    }, []);
+
+    // Update form data when locations change
+    useEffect(() => {
+        if (mounted) {
+            setFormData({
+                pickup: locations?.pickup?.name || '',
+                dropoff: locations?.dropoff?.name || ''
+            });
+        }
+    }, [locations?.pickup?.name, locations?.dropoff?.name, mounted]);
 
     useEffect(() => {
         if (!mounted) return;
@@ -36,6 +42,7 @@ export default function LocationSelector({ onLocationSelect, onConfirm, location
         ]);
     }, [mounted]);
 
+    // Initialize Google Maps Autocomplete
     useEffect(() => {
         if (!mounted) return;
 
@@ -46,7 +53,6 @@ export default function LocationSelector({ onLocationSelect, onConfirm, location
         });
 
         loader.load().then(() => {
-            // Initialize autocomplete for both inputs
             const initAutocomplete = (inputId, ref) => {
                 const input = document.getElementById(inputId);
                 if (input) {
@@ -82,6 +88,20 @@ export default function LocationSelector({ onLocationSelect, onConfirm, location
 
             initAutocomplete('pickup', pickupAutocomplete);
             initAutocomplete('dropoff', dropoffAutocomplete);
+
+            // Add global styles for autocomplete dropdown
+            const style = document.createElement('style');
+            style.textContent = `
+                .pac-container {
+                    z-index: 9999 !important;
+                    position: fixed !important;
+                    background-color: white;
+                    margin-top: 5px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                }
+            `;
+            document.head.appendChild(style);
         });
 
         return () => {
@@ -90,6 +110,10 @@ export default function LocationSelector({ onLocationSelect, onConfirm, location
             }
             if (dropoffAutocomplete.current) {
                 window.google?.maps?.event?.clearInstanceListeners(dropoffAutocomplete.current);
+            }
+            const styleElement = document.querySelector('style');
+            if (styleElement && styleElement.textContent.includes('pac-container')) {
+                styleElement.remove();
             }
         };
     }, [mounted, onLocationSelect]);
@@ -108,6 +132,16 @@ export default function LocationSelector({ onLocationSelect, onConfirm, location
         }
     }, [activeInput, onLocationSelect]);
 
+    const handleManualInput = useCallback((type, value) => {
+        setFormData(prev => ({ ...prev, [type]: value }));
+        const location = {
+            name: value,
+            address: value,
+            coordinates: null
+        };
+        onLocationSelect(type, location);
+    }, [onLocationSelect]);
+
     if (!mounted) {
         return null;
     }
@@ -116,7 +150,7 @@ export default function LocationSelector({ onLocationSelect, onConfirm, location
         <div className={`space-y-6 ${isDesktop ? 'px-0' : 'px-4 pb-6'}`}>
             {/* Pickup Location */}
             <div className="relative">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-secondary mb-1">
                     Pickup Location
                 </label>
                 <div className="relative">
@@ -124,36 +158,25 @@ export default function LocationSelector({ onLocationSelect, onConfirm, location
                         id="pickup"
                         type="text"
                         value={formData.pickup}
-                        onChange={(e) => setFormData(prev => ({ ...prev, pickup: e.target.value }))}
+                        onChange={(e) => handleManualInput('pickup', e.target.value)}
                         onFocus={() => setActiveInput('pickup')}
                         placeholder="Enter pickup location"
-                        className="w-full pl-10 pr-20 py-3 
+                        className="w-full pl-10 pr-3 py-3 
                             bg-background
                             border-2 border-gray-200 
                             rounded-lg 
                             focus:border-primary focus:ring-2 focus:ring-primary/20 
                             text-secondary
                             placeholder-gray-400
-                            transition-colors
-                            relative z-[1]"
+                            transition-colors"
                     />
                     <MapPinIcon className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setActiveInput('pickup');
-                            setShowSavedLocations(true);
-                        }}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-primary hover:text-accent font-medium"
-                    >
-                        Saved
-                    </button>
                 </div>
             </div>
 
             {/* Dropoff Location */}
             <div className="relative">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-secondary mb-1">
                     Dropoff Location
                 </label>
                 <div className="relative">
@@ -161,30 +184,19 @@ export default function LocationSelector({ onLocationSelect, onConfirm, location
                         id="dropoff"
                         type="text"
                         value={formData.dropoff}
-                        onChange={(e) => setFormData(prev => ({ ...prev, dropoff: e.target.value }))}
+                        onChange={(e) => handleManualInput('dropoff', e.target.value)}
                         onFocus={() => setActiveInput('dropoff')}
                         placeholder="Enter dropoff location"
-                        className="w-full pl-10 pr-20 py-3 
+                        className="w-full pl-10 pr-3 py-3 
                             bg-background
                             border-2 border-gray-200 
                             rounded-lg 
                             focus:border-primary focus:ring-2 focus:ring-primary/20 
                             text-secondary
                             placeholder-gray-400
-                            transition-colors
-                            relative z-[1]"
+                            transition-colors"
                     />
                     <MapPinIcon className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setActiveInput('dropoff');
-                            setShowSavedLocations(true);
-                        }}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-primary hover:text-accent font-medium"
-                    >
-                        Saved
-                    </button>
                 </div>
             </div>
 
@@ -194,7 +206,7 @@ export default function LocationSelector({ onLocationSelect, onConfirm, location
                 whileTap={{ scale: 0.98 }}
                 onClick={onConfirm}
                 className="w-full py-3 px-4 bg-primary text-white font-semibold rounded-lg hover:bg-accent transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-                disabled={!locations?.pickup || !locations?.dropoff}
+                disabled={!formData.pickup || !formData.dropoff}
             >
                 Confirm Locations
             </motion.button>
