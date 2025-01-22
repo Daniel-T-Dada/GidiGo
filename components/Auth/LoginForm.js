@@ -7,9 +7,7 @@ import { useRouter } from 'next/navigation';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
 import FormInput from './FormInput';
-import { authenticateUser } from '@/mockData/users';
-import { useStore } from '@/store/useStore';
-import toast from 'react-hot-toast';
+import useAuthStore from '@/store/authStore';
 import { showToast } from '@/utils/toast';
 import Link from 'next/link';
 
@@ -19,18 +17,9 @@ export default function LoginForm() {
     const [showForgotPassword, setShowForgotPassword] = useState(false);
     const [loginError, setLoginError] = useState('');
     const router = useRouter();
-    const { setUser } = useStore();
+    const { login } = useAuthStore();
 
-    const handleRoleBasedRedirect = async (user) => {
-        // Set user in Zustand store (which will also set the cookie)
-        setUser(user);
-
-        // Show success message
-        toast.success(user.role === 'driver' ? 'Welcome back, driver!' : 'Welcome back!');
-
-        // Add a small delay to ensure the store is updated
-        await new Promise(resolve => setTimeout(resolve, 100));
-
+    const handleRoleBasedRedirect = (user) => {
         // Redirect based on role
         if (user.role === 'driver') {
             router.push('/driver/dashboard');
@@ -40,37 +29,23 @@ export default function LoginForm() {
     };
 
     const onSubmit = async (data) => {
+        setIsLoading(true);
         try {
-            // Show loading toast
-            const loadingToast = showToast.loading('Signing in...');
-
-            const result = await authenticateUser(data.email, data.password);
-            if (result.success) {
-                await handleRoleBasedRedirect(result.user);
-            } else {
-                setLoginError(result.error);
-                showToast.error(result.error);
+            const success = await login(data.username, data.password);
+            if (success) {
+                handleRoleBasedRedirect(useAuthStore.getState().user);
             }
-
-            // Success
-            showToast.dismiss(loadingToast);
-            showToast.success('Signed in successfully!');
         } catch (error) {
             console.error('Login failed:', error);
-            const errorMessage = 'An unexpected error occurred. Please try again.';
-            setLoginError(errorMessage);
-            showToast.error(errorMessage);
+            setLoginError('Invalid credentials. Please try again.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const handleForgotPassword = async (data) => {
-        try {
-            // TODO: Implement forgot password API call
-            console.log('Reset password for:', data.email);
-            setShowForgotPassword(false);
-        } catch (error) {
-            console.error('Password reset failed:', error);
-        }
+        // TODO: Implement forgot password functionality
+        showToast.info('Password reset functionality coming soon!');
     };
 
     return (
@@ -162,18 +137,14 @@ export default function LoginForm() {
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         <FormInput
                             className='bg-background'
-                            id="email"
-                            label="Email address"
-                            type="email"
-                            register={register('email', {
-                                required: 'Email is required',
-                                pattern: {
-                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                    message: 'Invalid email address',
-                                },
+                            id="username"
+                            label="Username"
+                            type="text"
+                            register={register('username', {
+                                required: 'Username is required',
                             })}
-                            error={errors.email?.message}
-                            placeholder="your email"
+                            error={errors.username?.message}
+                            placeholder="your username"
                         />
 
                         <FormInput
