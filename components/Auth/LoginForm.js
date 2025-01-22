@@ -161,7 +161,7 @@ export default function LoginForm() {
                 ) : (
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         <FormInput
-                            className='placeholder-blue-400'
+                            className='placeholder-accent'
                             id="email"
                             label="Email address"
                             type="email"
@@ -185,6 +185,7 @@ export default function LoginForm() {
                             })}
                             error={errors.password?.message}
                             placeholder="••••••••"
+
                         />
 
                         <div className="flex items-center justify-between">
@@ -192,15 +193,15 @@ export default function LoginForm() {
                                 <input
                                     id="remember_me"
                                     type="checkbox"
-                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                    className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
                                 />
-                                <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-700">
+                                <label htmlFor="remember_me" className="ml-2 block text-sm text-secondary">
                                     Remember me
                                 </label>
                             </div>
 
                             <div className="text-sm">
-                                <Link href="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
+                                <Link href="/forgot-password" className="font-medium text-primary hover:text-accent">
                                     Forgot your password?
                                 </Link>
                             </div>
@@ -215,8 +216,8 @@ export default function LoginForm() {
                                 className={`
                                     w-full flex justify-center py-2.5 px-4 border border-transparent 
                                     rounded-md shadow-sm text-sm font-medium text-white 
-                                    bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 
-                                    focus:ring-offset-2 focus:ring-blue-500 transition-colors
+                                    bg-primary hover:bg-accent focus:outline-none focus:ring-2 
+                                    focus:ring-offset-2 focus:ring-primary transition-colors
                                     ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}
                                 `}
                             >

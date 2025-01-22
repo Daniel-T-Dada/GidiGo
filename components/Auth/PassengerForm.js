@@ -40,7 +40,7 @@ export default function PassengerForm() {
         return (
             <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
                 <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                    <h2 className="mt-2 text-center text-3xl font-extrabold text-gray-900">
+                    <h2 className="mt-2 text-center text-3xl font-extrabold text-secondary">
                         Create a passenger account
                     </h2>
                 </div>
@@ -51,7 +51,7 @@ export default function PassengerForm() {
     return (
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <h2 className="mt-2 text-center text-3xl font-extrabold text-gray-900">
+                <h2 className="mt-2 text-center text-3xl font-extrabold text-secondary">
                     Create a passenger account
                 </h2>
             </div>
@@ -64,7 +64,7 @@ export default function PassengerForm() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             type="button"
-                            className="w-full inline-flex justify-center py-2.5 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                            className="w-full inline-flex justify-center py-2.5 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-secondary hover:bg-gray-50 transition-colors"
                         >
                             <FcGoogle className="h-5 w-5 mr-2" />
                             <span>Google</span>
@@ -73,7 +73,7 @@ export default function PassengerForm() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             type="button"
-                            className="w-full inline-flex justify-center py-2.5 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                            className="w-full inline-flex justify-center py-2.5 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-secondary hover:bg-gray-50 transition-colors"
                         >
                             <FaFacebook className="h-5 w-5 mr-2 text-blue-600" />
                             <span>Facebook</span>
@@ -85,7 +85,7 @@ export default function PassengerForm() {
                             <div className="w-full border-t border-gray-300" />
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                            <span className="px-2 bg-white text-secondary">Or continue with</span>
                         </div>
                     </div>
 
@@ -152,8 +152,8 @@ export default function PassengerForm() {
                                 className={`
                                     w-full flex justify-center py-2.5 px-4 border border-transparent 
                                     rounded-md shadow-sm text-sm font-medium text-white 
-                                    bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 
-                                    focus:ring-offset-2 focus:ring-blue-500 transition-colors
+                                    bg-primary hover:bg-accent focus:outline-none focus:ring-2 
+                                    focus:ring-offset-2 focus:ring-primary transition-colors
                                     ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}
                                 `}
                             >

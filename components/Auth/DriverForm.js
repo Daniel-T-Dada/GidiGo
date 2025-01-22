@@ -65,7 +65,7 @@ export default function DriverForm() {
     return (
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <h2 className="mt-2 text-center text-3xl font-extrabold text-gray-900">
+                <h2 className="mt-2 text-center text-3xl font-extrabold text-secondary">
                     Create a driver account
                 </h2>
             </div>
@@ -76,14 +76,14 @@ export default function DriverForm() {
                     <div className="grid grid-cols-2 gap-3">
                         <button
                             type="button"
-                            className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                            className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-secondary hover:bg-gray-50"
                         >
                             <FcGoogle className="h-5 w-5 mr-2" />
                             <span>Google</span>
                         </button>
                         <button
                             type="button"
-                            className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                            className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-secondary hover:bg-gray-50"
                         >
                             <FaFacebook className="h-5 w-5 mr-2 text-blue-600" />
                             <span>Facebook</span>
@@ -95,7 +95,7 @@ export default function DriverForm() {
                             <div className="w-full border-t border-gray-300" />
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                            <span className="px-2 bg-white text-secondary">Or continue with</span>
                         </div>
                     </div>
 
@@ -292,12 +292,12 @@ export default function DriverForm() {
 
                             {/* Driver's License */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">Driver&apos;s License</label>
+                                <label className="block text-sm font-medium text-secondary">Driver&apos;s License</label>
                                 <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                                     <div className="space-y-1 text-center">
                                         <FaCloudUploadAlt className="mx-auto h-12 w-12 text-gray-400" />
                                         <div className="flex text-sm text-gray-600">
-                                            <label htmlFor="license" className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                            <label htmlFor="license" className="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-accent focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary">
                                                 <span>Upload a file</span>
                                                 <input
                                                     id="license"
@@ -321,12 +321,12 @@ export default function DriverForm() {
 
                             {/* Vehicle Insurance */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">Vehicle Insurance</label>
+                                <label className="block text-sm font-medium text-secondary">Vehicle Insurance</label>
                                 <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                                     <div className="space-y-1 text-center">
                                         <FaCloudUploadAlt className="mx-auto h-12 w-12 text-gray-400" />
                                         <div className="flex text-sm text-gray-600">
-                                            <label htmlFor="insurance" className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                            <label htmlFor="insurance" className="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-accent focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary">
                                                 <span>Upload a file</span>
                                                 <input
                                                     id="insurance"
@@ -350,12 +350,12 @@ export default function DriverForm() {
 
                             {/* Vehicle Registration */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">Vehicle Registration</label>
+                                <label className="block text-sm font-medium text-secondary">Vehicle Registration</label>
                                 <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                                     <div className="space-y-1 text-center">
                                         <FaCloudUploadAlt className="mx-auto h-12 w-12 text-gray-400" />
                                         <div className="flex text-sm text-gray-600">
-                                            <label htmlFor="vehicleRegistration" className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                            <label htmlFor="vehicleRegistration" className="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-accent focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary">
                                                 <span>Upload a file</span>
                                                 <input
                                                     id="vehicleRegistration"
@@ -384,8 +384,7 @@ export default function DriverForm() {
                                 whileTap={{ scale: 0.99 }}
                                 type="submit"
                                 disabled={isLoading}
-                                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isLoading ? 'opacity-75 cursor-not-allowed' : ''
-                                    }`}
+                                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-accent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
                             >
                                 {isLoading ? 'Creating account...' : 'Create account'}
                             </motion.button>
