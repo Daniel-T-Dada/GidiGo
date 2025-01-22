@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { UserIcon, TruckIcon } from '@heroicons/react/24/outline';
 import PassengerForm from '@/components/Auth/PassengerForm';
 import DriverForm from '@/components/Auth/DriverForm';
 import { useSearchParams } from 'next/navigation';
+import { ErrorBoundary } from 'react-error-boundary';
 
-export default function SignupPage() {
+function SignupContent() {
     const [selectedRole, setSelectedRole] = useState(null);
     const searchParams = useSearchParams();
 
@@ -117,5 +118,15 @@ export default function SignupPage() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function SignupPage() {
+    return (
+        <ErrorBoundary fallback={<div>Something went wrong. Please try again.</div>}>
+            <Suspense fallback={<div>Loading...</div>}>
+                <SignupContent />
+            </Suspense>
+        </ErrorBoundary>
     );
 } 
