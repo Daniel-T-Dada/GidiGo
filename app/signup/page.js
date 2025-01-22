@@ -6,7 +6,15 @@ import { UserIcon, TruckIcon } from '@heroicons/react/24/outline';
 import PassengerForm from '@/components/Auth/PassengerForm';
 import DriverForm from '@/components/Auth/DriverForm';
 import { useSearchParams } from 'next/navigation';
-import { ErrorBoundary } from 'react-error-boundary';
+
+// Loading component
+function LoadingFallback() {
+    return (
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        </div>
+    );
+}
 
 function SignupContent() {
     const [selectedRole, setSelectedRole] = useState(null);
@@ -123,10 +131,8 @@ function SignupContent() {
 
 export default function SignupPage() {
     return (
-        <ErrorBoundary fallback={<div>Something went wrong. Please try again.</div>}>
-            <Suspense fallback={<div>Loading...</div>}>
-                <SignupContent />
-            </Suspense>
-        </ErrorBoundary>
+        <Suspense fallback={<LoadingFallback />}>
+            <SignupContent />
+        </Suspense>
     );
 } 
