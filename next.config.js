@@ -6,8 +6,6 @@ const nextConfig = {
     },
     // Disable React.StrictMode in production to avoid double-rendering
     reactStrictMode: false,
-    // Enable SWC minification
-    swcMinify: true,
     // Increase memory limit for build
     experimental: {
         memoryBasedWorkersCount: true,
