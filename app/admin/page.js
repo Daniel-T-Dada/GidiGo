@@ -105,7 +105,7 @@ const AdminDashboard = () => {
                                 placeholder="Search..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full sm:w-auto pl-10 pr-4 py-2 text-sm border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                                className="w-full sm:w-auto pl-10 pr-4 py-2 text-sm border-2 bg-white border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                             />
                         </div>
                         <motion.button
