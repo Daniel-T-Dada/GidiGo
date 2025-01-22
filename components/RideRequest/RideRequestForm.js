@@ -67,7 +67,7 @@ export default function RideRequestForm({ locations, onBack, isDesktop = false }
                     >
                         <ArrowLeftIcon className="h-5 w-5 text-gray-500" />
                     </motion.button>
-                    <h2 className="text-xl font-semibold text-gray-900">Confirm Ride</h2>
+                    <h2 className="text-xl font-semibold text-secondary">Confirm Ride</h2>
                 </div>
                 <motion.button
                     whileHover={{ scale: 1.1 }}
@@ -82,42 +82,42 @@ export default function RideRequestForm({ locations, onBack, isDesktop = false }
             {/* Ride Details */}
             <div className="bg-gray-50 rounded-lg p-4 space-y-3">
                 <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Distance</span>
-                    <span className="font-medium">{rideDetails.distance}</span>
+                    <span className="text-sm text-secondary">Distance</span>
+                    <span className="font-medium text-secondary">{rideDetails.distance}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Duration</span>
-                    <span className="font-medium">{rideDetails.duration}</span>
+                    <span className="text-sm text-secondary">Duration</span>
+                    <span className="font-medium text-secondary">{rideDetails.duration}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Estimated Fare</span>
-                    <span className="font-medium text-lg">{rideDetails.fare}</span>
+                    <span className="text-sm text-secondary">Estimated Fare</span>
+                    <span className="font-medium text-lg text-secondary">{rideDetails.fare}</span>
                 </div>
             </div>
 
             {/* Location Details */}
             <div className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">Pickup</label>
-                    <div className="text-gray-900">{locations?.pickup?.address || locations?.pickup?.name}</div>
+                    <label className="block text-sm font-medium text-secondary mb-1">Pickup</label>
+                    <div className="text-secondary">{locations?.pickup?.address || locations?.pickup?.name}</div>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">Dropoff</label>
-                    <div className="text-gray-900">{locations?.dropoff?.address || locations?.dropoff?.name}</div>
+                    <label className="block text-sm font-medium text-secondary mb-1">Dropoff</label>
+                    <div className="text-secondary">{locations?.dropoff?.address || locations?.dropoff?.name}</div>
                 </div>
             </div>
 
             {/* Payment Method Selection */}
             <div className="space-y-3">
-                <label className="block text-sm font-medium text-gray-600">Payment Method</label>
+                <label className="block text-sm font-medium text-secondary">Payment Method</label>
                 <div className="grid grid-cols-2 gap-3">
                     <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setPaymentMethod('card')}
                         className={`flex items-center justify-center space-x-2 p-3 rounded-lg border-2 transition-colors ${paymentMethod === 'card'
-                            ? 'border-blue-500 bg-blue-50 text-blue-700'
-                            : 'border-gray-200 hover:border-gray-300'
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-gray-200 hover:border-gray-300 text-secondary'
                             }`}
                     >
                         <CreditCardIcon className="h-5 w-5" />
@@ -128,8 +128,8 @@ export default function RideRequestForm({ locations, onBack, isDesktop = false }
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setPaymentMethod('cash')}
                         className={`flex items-center justify-center space-x-2 p-3 rounded-lg border-2 transition-colors ${paymentMethod === 'cash'
-                            ? 'border-blue-500 bg-blue-50 text-blue-700'
-                            : 'border-gray-200 hover:border-gray-300'
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-gray-200 hover:border-gray-300 text-secondary'
                             }`}
                     >
                         <BanknotesIcon className="h-5 w-5" />
@@ -140,10 +140,17 @@ export default function RideRequestForm({ locations, onBack, isDesktop = false }
 
             {/* Note for Driver */}
             <div>
-                <label className="block text-sm font-medium text-gray-600 mb-2">Note for Driver (Optional)</label>
+                <label className="block text-sm font-medium text-secondary mb-2">Note for Driver (Optional)</label>
                 <textarea
                     placeholder="Any special instructions..."
-                    className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-colors resize-none"
+                    className="w-full p-3 
+                        bg-background 
+                        border-2 border-gray-200 
+                        rounded-lg 
+                        focus:border-primary focus:ring-2 focus:ring-primary/20 
+                        text-secondary
+                        placeholder-gray-400
+                        transition-colors resize-none"
                     rows={3}
                 />
             </div>
@@ -155,7 +162,7 @@ export default function RideRequestForm({ locations, onBack, isDesktop = false }
                 onClick={handleSubmit}
                 disabled={isLoading}
                 className={`w-full py-4 px-4 rounded-lg text-white font-semibold text-base
-                    ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}
+                    ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary hover:bg-accent'}
                     transition-colors
                 `}
             >

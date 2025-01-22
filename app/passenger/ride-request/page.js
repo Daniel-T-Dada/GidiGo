@@ -164,7 +164,11 @@ export default function RideRequestPage() {
                 <motion.div
                     initial={{ y: 20 }}
                     animate={{ y: 0 }}
-                    className="md:hidden absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl transform transition-transform duration-300 ease-in-out max-h-[85vh] overflow-y-auto"
+                    className="md:hidden fixed bottom-0 left-0 right-0 
+                        bg-background rounded-t-3xl shadow-2xl 
+                        transform transition-transform duration-300 ease-in-out 
+                        max-h-[85vh] overflow-y-auto
+                        z-[1000]"
                 >
                     <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto my-3" />
                     <AnimatePresence mode="wait">
@@ -188,6 +192,7 @@ export default function RideRequestPage() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
+                                className="relative"
                             >
                                 <LocationSelector
                                     onLocationSelect={handleLocationSelect}
@@ -201,6 +206,7 @@ export default function RideRequestPage() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
+                                className="relative"
                             >
                                 <RideRequestForm
                                     locations={locations}

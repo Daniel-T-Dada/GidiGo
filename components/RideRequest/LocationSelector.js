@@ -127,7 +127,15 @@ export default function LocationSelector({ onLocationSelect, onConfirm, location
                         onChange={(e) => setFormData(prev => ({ ...prev, pickup: e.target.value }))}
                         onFocus={() => setActiveInput('pickup')}
                         placeholder="Enter pickup location"
-                        className="w-full pl-10 pr-20 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-colors"
+                        className="w-full pl-10 pr-20 py-3 
+                            bg-background
+                            border-2 border-gray-200 
+                            rounded-lg 
+                            focus:border-primary focus:ring-2 focus:ring-primary/20 
+                            text-secondary
+                            placeholder-gray-400
+                            transition-colors
+                            relative z-[1]"
                     />
                     <MapPinIcon className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                     <button
@@ -136,7 +144,7 @@ export default function LocationSelector({ onLocationSelect, onConfirm, location
                             setActiveInput('pickup');
                             setShowSavedLocations(true);
                         }}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-primary hover:text-accent font-medium"
                     >
                         Saved
                     </button>
@@ -156,7 +164,15 @@ export default function LocationSelector({ onLocationSelect, onConfirm, location
                         onChange={(e) => setFormData(prev => ({ ...prev, dropoff: e.target.value }))}
                         onFocus={() => setActiveInput('dropoff')}
                         placeholder="Enter dropoff location"
-                        className="w-full pl-10 pr-20 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-colors"
+                        className="w-full pl-10 pr-20 py-3 
+                            bg-background
+                            border-2 border-gray-200 
+                            rounded-lg 
+                            focus:border-primary focus:ring-2 focus:ring-primary/20 
+                            text-secondary
+                            placeholder-gray-400
+                            transition-colors
+                            relative z-[1]"
                     />
                     <MapPinIcon className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                     <button
@@ -165,7 +181,7 @@ export default function LocationSelector({ onLocationSelect, onConfirm, location
                             setActiveInput('dropoff');
                             setShowSavedLocations(true);
                         }}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-primary hover:text-accent font-medium"
                     >
                         Saved
                     </button>
@@ -177,7 +193,7 @@ export default function LocationSelector({ onLocationSelect, onConfirm, location
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={onConfirm}
-                className="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+                className="w-full py-3 px-4 bg-primary text-white font-semibold rounded-lg hover:bg-accent transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
                 disabled={!locations?.pickup || !locations?.dropoff}
             >
                 Confirm Locations
