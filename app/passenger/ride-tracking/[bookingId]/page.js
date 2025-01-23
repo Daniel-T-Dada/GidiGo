@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { useStore } from '@/store/useStore';
+import useAuthStore from '@/store/authStore';
 import dynamic from 'next/dynamic';
 
 // Dynamically import RideTrackingPage to prevent SSR issues
@@ -19,6 +19,7 @@ export default function PassengerRideTrackingPage() {
     const [mounted, setMounted] = useState(false);
     const params = useParams();
     const bookingId = params?.bookingId;
+    const { user } = useAuthStore();
 
     useEffect(() => {
         setMounted(true);

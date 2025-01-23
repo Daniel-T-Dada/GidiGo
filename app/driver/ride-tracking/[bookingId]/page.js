@@ -14,7 +14,8 @@ import {
     ArrowLeftIcon
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
-import { useStore } from '@/store/useStore';
+import useAuthStore from '@/store/authStore';
+import { RIDE_STATUS } from '@/hooks/useRideTracking';
 
 // Dynamically import MapComponent to prevent hydration issues
 const MapComponent = dynamic(() => import('@/components/MapComponent'), {
@@ -25,13 +26,6 @@ const MapComponent = dynamic(() => import('@/components/MapComponent'), {
         </div>
     )
 });
-
-const RIDE_STATUS = {
-    ACCEPTED: 'ACCEPTED',
-    IN_PROGRESS: 'IN_PROGRESS',
-    COMPLETED: 'COMPLETED',
-    CANCELLED: 'CANCELLED'
-};
 
 // Payment Confirmation Modal
 const PaymentConfirmationModal = memo(({ fare, onConfirm, onClose }) => (
@@ -99,7 +93,7 @@ export default function RideTrackingPage() {
     const [currentLocation, setCurrentLocation] = useState(null);
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [isMapMounted, setIsMapMounted] = useState(false);
-    const { currentRide, setCurrentRide } = useStore();
+    const { currentRide, setCurrentRide } = useAuthStore();
 
     // Set map mounted state after hydration
     useEffect(() => {

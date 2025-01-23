@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useStore } from '@/store/useStore';
+import useAuthStore from '@/store/authStore';
 import TripHistoryPage from '@/components/TripHistory/TripHistoryPage';
 
 export default function PassengerTripHistoryPage() {
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
-    const { user } = useStore();
+    const { user } = useAuthStore();
 
     useEffect(() => {
         if (!user) {

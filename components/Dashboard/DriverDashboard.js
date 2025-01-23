@@ -12,7 +12,7 @@ import {
     ArrowTrendingUpIcon,
     UserGroupIcon
 } from '@heroicons/react/24/outline';
-import { useStore } from '@/store/useStore';
+import useAuthStore from '@/store/authStore';
 import { subscribeToPusherChannel, createDriverChannel } from '@/lib/pusher';
 import { RIDE_STATUS } from '@/hooks/useRideTracking';
 import { usePusher } from '@/hooks/usePusher';
@@ -26,7 +26,7 @@ export default function DriverDashboard() {
         currentRide,
         setCurrentRide,
         addNotification
-    } = useStore();
+    } = useAuthStore();
     const [isMounted, setIsMounted] = useState(false);
     const [activeRequests, setActiveRequests] = useState([]);
     const [earnings, setEarnings] = useState({

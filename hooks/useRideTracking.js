@@ -2,27 +2,27 @@
 
 import { useCallback, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { useStore } from '@/store/useStore';
+import useAuthStore from '@/store/authStore';
 import { simulateDriverStatusUpdates } from '@/mockData/pusherMock';
 
 export const RIDE_STATUS = {
-    PENDING: 'pending',
-    DRIVER_ASSIGNED: 'driver_assigned',
-    ARRIVING: 'arriving',
-    IN_PROGRESS: 'in_progress',
-    COMPLETED: 'completed',
-    CANCELLED: 'cancelled'
+    PENDING: 'PENDING',
+    ACCEPTED: 'ACCEPTED',
+    ARRIVED: 'ARRIVED',
+    STARTED: 'STARTED',
+    COMPLETED: 'COMPLETED',
+    CANCELLED: 'CANCELLED'
 };
 
 export function useRideTracking(bookingId) {
-    const { currentRide, setCurrentRide } = useStore();
+    const { currentRide, setCurrentRide } = useAuthStore();
 
     // Subscribe to mock status updates
     useEffect(() => {
         if (!bookingId || !currentRide) return;
 
         // Only start status updates if a driver has been assigned
-        if (currentRide.status !== RIDE_STATUS.DRIVER_ASSIGNED) return;
+        if (currentRide.status !== RIDE_STATUS.ACCEPTED) return;
 
         console.log('Starting ride status updates...');
 
@@ -34,9 +34,9 @@ export function useRideTracking(bookingId) {
             }));
 
             // Show toast notifications for important status changes
-            if (status === RIDE_STATUS.ARRIVING) {
+            if (status === RIDE_STATUS.ARRIVED) {
                 toast.success('Your driver is arriving!');
-            } else if (status === RIDE_STATUS.IN_PROGRESS) {
+            } else if (status === RIDE_STATUS.STARTED) {
                 toast.success('Your ride has started!');
             } else if (status === RIDE_STATUS.COMPLETED) {
                 toast.success('Ride completed! Thank you for riding with us.');
@@ -52,17 +52,17 @@ export function useRideTracking(bookingId) {
     // Get status information
     const getStatusInfo = useCallback(() => {
         const statusMap = {
-            [RIDE_STATUS.DRIVER_ASSIGNED]: {
+            [RIDE_STATUS.ACCEPTED]: {
                 title: 'Driver Assigned',
                 description: 'Your driver is on the way',
                 color: 'blue'
             },
-            [RIDE_STATUS.ARRIVING]: {
+            [RIDE_STATUS.ARRIVED]: {
                 title: 'Driver Arriving',
                 description: 'Your driver is almost there',
                 color: 'yellow'
             },
-            [RIDE_STATUS.IN_PROGRESS]: {
+            [RIDE_STATUS.STARTED]: {
                 title: 'In Progress',
                 description: 'You are on your way to the destination',
                 color: 'green'
@@ -108,7 +108,7 @@ export function useRideTracking(bookingId) {
     // Add canCancelRide as a function
     const canCancelRide = useCallback(() => {
         return currentRide?.status === RIDE_STATUS.PENDING ||
-            currentRide?.status === RIDE_STATUS.DRIVER_ASSIGNED;
+            currentRide?.status === RIDE_STATUS.ACCEPTED;
     }, [currentRide?.status]);
 
     return {
