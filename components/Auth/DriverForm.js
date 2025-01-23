@@ -6,12 +6,14 @@ import { useForm } from 'react-hook-form';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook, FaCloudUploadAlt } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
+import { showToast } from '@/utils/toast';
+import useAuthStore from '@/store/authStore';
 
 export default function DriverForm() {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+    const { register: registerUser } = useAuthStore();
     const [uploadedFiles, setUploadedFiles] = useState({
         license: null,
         insurance: null,
@@ -21,6 +23,7 @@ export default function DriverForm() {
     const handleFileUpload = (event, type) => {
         const file = event.target.files[0];
         if (file) {
+            console.log(`Uploading ${type} file:`, file.name);
             setUploadedFiles(prev => ({
                 ...prev,
                 [type]: file
@@ -29,34 +32,54 @@ export default function DriverForm() {
     };
 
     const onSubmit = async (data) => {
-        setIsLoading(true);
         try {
-            // Combine form data with uploaded files
+            console.log('Form data:', { ...data, password: '[REDACTED]' });
+            setIsLoading(true);
+
+            // Prepare user data
+            const userData = {
+                username: data.email.split('@')[0], // Generate username from email
+                email: data.email,
+                password: data.password,
+                re_password: data.password, // Required by backend
+                first_name: data.firstName.trim(),
+                last_name: data.lastName.trim(),
+                phone_number: data.phone,
+                role: 'driver',
+                vehicle_make: data.vehicleMake,
+                vehicle_model: data.vehicleModel,
+                vehicle_year: data.vehicleYear,
+                license_plate: data.plateNumber
+            };
+
+            // Add files to FormData
             const formData = new FormData();
-            Object.keys(data).forEach(key => {
-                formData.append(key, data[key]);
+            Object.keys(userData).forEach(key => {
+                formData.append(key, userData[key]);
             });
+
+            // Add files if they exist
             Object.keys(uploadedFiles).forEach(key => {
                 if (uploadedFiles[key]) {
                     formData.append(key, uploadedFiles[key]);
                 }
             });
 
-            // TODO: Implement API call to register driver
-            // Simulating API call for now
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            console.log('Prepared user data:', { ...userData, password: '[REDACTED]' });
 
-            // Show success message
-            toast.success('Registration successful! Redirecting to dashboard...');
+            // Call registration function
+            const result = await registerUser(formData);
+            console.log('Registration result:', result);
 
-            // Redirect to driver dashboard after a short delay
-            setTimeout(() => {
-                router.push('/driver/dashboard');
-            }, 1000);
-
+            if (result.success) {
+                if (result.loginError) {
+                    router.push('/login');
+                } else {
+                    router.push('/driver/dashboard');
+                }
+            }
         } catch (error) {
-            console.error('Registration failed:', error);
-            toast.error('Registration failed. Please try again.');
+            console.error('Registration error:', error);
         } finally {
             setIsLoading(false);
         }
@@ -104,22 +127,72 @@ export default function DriverForm() {
                         <div className="space-y-6">
                             <h3 className="text-lg font-medium text-gray-900">Personal Information</h3>
 
-                            {/* Full Name */}
-                            <div>
-                                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
-                                    Full Name
-                                </label>
-                                <div className="mt-1">
-                                    <input
-                                        id="fullName"
-                                        type="text"
-                                        placeholder="Enter your full name"
-                                        {...register('fullName', { required: 'Full name is required' })}
-                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                    />
-                                    {errors.fullName && (
-                                        <p className="mt-1 text-sm text-red-600">{errors.fullName.message}</p>
-                                    )}
+                            {/* Name Fields */}
+                            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                {/* First Name */}
+                                <div>
+                                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                                        First Name
+                                    </label>
+                                    <div className="mt-1">
+                                        <input
+                                            id="firstName"
+                                            type="text"
+                                            placeholder="Enter your first name"
+                                            {...register('firstName', {
+                                                required: 'First name is required',
+                                                pattern: {
+                                                    value: /^[A-Za-z\s-']+$/,
+                                                    message: 'First name can only contain letters, spaces, hyphens, and apostrophes'
+                                                },
+                                                minLength: {
+                                                    value: 2,
+                                                    message: 'First name must be at least 2 characters'
+                                                },
+                                                maxLength: {
+                                                    value: 50,
+                                                    message: 'First name cannot exceed 50 characters'
+                                                }
+                                            })}
+                                            className="mt-1 block w-full px-3 py-2 bg-white text-secondary border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        />
+                                        {errors.firstName && (
+                                            <p className="mt-1 text-sm text-red-600">{errors.firstName.message}</p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Last Name */}
+                                <div>
+                                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                                        Last Name
+                                    </label>
+                                    <div className="mt-1">
+                                        <input
+                                            id="lastName"
+                                            type="text"
+                                            placeholder="Enter your last name"
+                                            {...register('lastName', {
+                                                required: 'Last name is required',
+                                                pattern: {
+                                                    value: /^[A-Za-z\s-']+$/,
+                                                    message: 'Last name can only contain letters, spaces, hyphens, and apostrophes'
+                                                },
+                                                minLength: {
+                                                    value: 2,
+                                                    message: 'Last name must be at least 2 characters'
+                                                },
+                                                maxLength: {
+                                                    value: 50,
+                                                    message: 'Last name cannot exceed 50 characters'
+                                                }
+                                            })}
+                                            className="mt-1 block w-full px-3 py-2 bg-white text-secondary border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        />
+                                        {errors.lastName && (
+                                            <p className="mt-1 text-sm text-red-600">{errors.lastName.message}</p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
 
@@ -140,7 +213,7 @@ export default function DriverForm() {
                                                 message: 'Invalid email address',
                                             },
                                         })}
-                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        className="mt-1 block w-full px-3 py-2 bg-white text-secondary border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     />
                                     {errors.email && (
                                         <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
@@ -165,7 +238,7 @@ export default function DriverForm() {
                                                 message: 'Please enter a valid phone number',
                                             },
                                         })}
-                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        className="mt-1 block w-full px-3 py-2 bg-white text-secondary border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     />
                                     {errors.phone && (
                                         <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
@@ -190,7 +263,7 @@ export default function DriverForm() {
                                                 message: 'Password must be at least 8 characters',
                                             },
                                         })}
-                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        className="mt-1 block w-full px-3 py-2 bg-white text-secondary border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     />
                                     {errors.password && (
                                         <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
@@ -214,7 +287,7 @@ export default function DriverForm() {
                                         type="text"
                                         placeholder="e.g., Toyota"
                                         {...register('vehicleMake', { required: 'Vehicle make is required' })}
-                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        className="mt-1 block w-full px-3 py-2 bg-white text-secondary border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     />
                                     {errors.vehicleMake && (
                                         <p className="mt-1 text-sm text-red-600">{errors.vehicleMake.message}</p>
@@ -233,7 +306,7 @@ export default function DriverForm() {
                                         type="text"
                                         placeholder="e.g., Camry"
                                         {...register('vehicleModel', { required: 'Vehicle model is required' })}
-                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        className="mt-1 block w-full px-3 py-2 bg-white text-secondary border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     />
                                     {errors.vehicleModel && (
                                         <p className="mt-1 text-sm text-red-600">{errors.vehicleModel.message}</p>
@@ -258,7 +331,7 @@ export default function DriverForm() {
                                                 message: 'Vehicle must be 2015 or newer',
                                             },
                                         })}
-                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        className="mt-1 block w-full px-3 py-2 bg-white text-secondary border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     />
                                     {errors.vehicleYear && (
                                         <p className="mt-1 text-sm text-red-600">{errors.vehicleYear.message}</p>
@@ -277,7 +350,7 @@ export default function DriverForm() {
                                         type="text"
                                         placeholder="Enter license plate number"
                                         {...register('licensePlate', { required: 'License plate is required' })}
-                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                        className="mt-1 block w-full px-3 py-2 bg-white text-secondary border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     />
                                     {errors.licensePlate && (
                                         <p className="mt-1 text-sm text-red-600">{errors.licensePlate.message}</p>

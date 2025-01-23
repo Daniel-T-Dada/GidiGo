@@ -10,10 +10,12 @@ import {
     XMarkIcon,
     PlusIcon,
     CheckIcon,
-    PencilIcon
+    PencilIcon,
+    DeviceTabletIcon
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
+import SessionManager from '@/components/Auth/SessionManager';
 
 // Dynamically import ReactCrop to avoid hydration errors
 const ReactCrop = dynamic(
@@ -459,7 +461,8 @@ export default function SettingsPage() {
     const tabs = [
         { id: 'personal', label: 'Personal Info', icon: UserIcon },
         { id: 'payment', label: 'Payment Methods', icon: CreditCardIcon },
-        { id: 'notifications', label: 'Notifications', icon: BellIcon }
+        { id: 'notifications', label: 'Notifications', icon: BellIcon },
+        { id: 'sessions', label: 'Active Sessions', icon: DeviceTabletIcon }
     ];
 
     const handleUpdateUser = useCallback((data) => {
@@ -479,88 +482,47 @@ export default function SettingsPage() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
-            <div className="max-w-4xl mx-auto px-4">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">Settings</h1>
-
-                {/* Tabs */}
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                    {/* Mobile Tab Selector */}
-                    <div className="sm:hidden p-4 bg-gray-50">
-                        <select
-                            value={activeTab}
-                            onChange={(e) => setActiveTab(e.target.value)}
-                            className="block w-full rounded-lg border-2 border-gray-300 px-4 py-2.5 text-base font-medium text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                        >
-                            {tabs.map(({ id, label }) => (
-                                <option key={id} value={id} className="py-2 text-gray-900 font-medium">
-                                    {label}
-                                </option>
+        <div className="container mx-auto px-4 py-8">
+            <div className="max-w-3xl mx-auto">
+                <div className="bg-white shadow rounded-lg">
+                    <div className="border-b border-gray-200">
+                        <nav className="flex -mb-px">
+                            {tabs.map((tab) => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    className={`${activeTab === tab.id
+                                        ? 'border-primary text-primary'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                        } flex-1 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center justify-center`}
+                                >
+                                    <tab.icon className="h-5 w-5 mr-2" />
+                                    {tab.label}
+                                </button>
                             ))}
-                        </select>
-                    </div>
-
-                    {/* Desktop Tabs */}
-                    <div className="hidden sm:block border-b border-gray-200">
-                        <nav className="flex px-6" aria-label="Settings navigation">
-                            {tabs.map(({ id, label, icon: Icon }) => {
-                                const isActive = activeTab === id;
-                                return (
-                                    <motion.button
-                                        key={id}
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        onClick={() => setActiveTab(id)}
-                                        className={`relative flex items-center space-x-2 py-4 px-4 font-semibold transition-colors ${isActive
-                                            ? 'text-blue-700'
-                                            : 'text-gray-700 hover:text-gray-900'
-                                            }`}
-                                        aria-current={isActive ? 'page' : undefined}
-                                    >
-                                        <Icon className={`h-5 w-5 ${isActive ? 'text-blue-700' : 'text-gray-500'}`} />
-                                        <span>{label}</span>
-                                        {isActive && (
-                                            <motion.div
-                                                layoutId="activeTab"
-                                                className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-700"
-                                                initial={false}
-                                                transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                                            />
-                                        )}
-                                    </motion.button>
-                                );
-                            })}
                         </nav>
                     </div>
 
-                    {/* Tab Content */}
-                    <div className="p-4 sm:p-6">
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={activeTab}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.2 }}
-                            >
-                                {activeTab === 'personal' && (
-                                    <PersonalInfoTab user={user} onUpdate={handleUpdateUser} />
-                                )}
-                                {activeTab === 'payment' && (
-                                    <PaymentMethodsTab
-                                        cards={cards}
-                                        onAddCard={handleAddCard}
-                                        onRemoveCard={handleRemoveCard}
-                                    />
-                                )}
-                                {activeTab === 'notifications' && (
-                                    <NotificationsTab
-                                        preferences={notificationPreferences}
-                                        onUpdate={handleUpdateNotifications}
-                                    />
-                                )}
-                            </motion.div>
-                        </AnimatePresence>
+                    <div className="p-6">
+                        {activeTab === 'personal' && (
+                            <PersonalInfoTab user={user} onUpdate={handleUpdateUser} />
+                        )}
+                        {activeTab === 'payment' && (
+                            <PaymentMethodsTab
+                                cards={cards}
+                                onAddCard={handleAddCard}
+                                onRemoveCard={handleRemoveCard}
+                            />
+                        )}
+                        {activeTab === 'notifications' && (
+                            <NotificationsTab
+                                preferences={notificationPreferences}
+                                onUpdate={handleUpdateNotifications}
+                            />
+                        )}
+                        {activeTab === 'sessions' && (
+                            <SessionManager />
+                        )}
                     </div>
                 </div>
             </div>

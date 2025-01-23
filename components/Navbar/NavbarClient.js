@@ -5,14 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Bars3Icon, XMarkIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useStore } from '@/store/useStore';
+import useAuthStore from '@/store/authStore';
 import { showToast } from '@/utils/toast';
 
 export default function NavbarClient() {
     const [isOpen, setIsOpen] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
     const router = useRouter();
-    const { user, logout } = useStore();
+    const { user, isAuthenticated, logout } = useAuthStore();
 
     useEffect(() => {
         setIsMounted(true);
@@ -31,23 +31,24 @@ export default function NavbarClient() {
         }
     }, [isOpen]);
 
-    const handleLogout = () => {
-        const loadingToast = showToast.loading('Logging out...');
+    const handleLogout = async () => {
         try {
-            logout();
-            showToast.dismiss(loadingToast);
-            showToast.success('Logged out successfully');
+            await logout();
             router.push('/');
             setIsOpen(false);
         } catch (error) {
-            showToast.dismiss(loadingToast);
-            showToast.error('Failed to logout. Please try again.');
+            console.error('Logout error:', error);
         }
     };
 
     if (!isMounted) {
         return null;
     }
+
+    const getDashboardLink = () => {
+        if (!user) return '/dashboard';
+        return user.role === 'driver' ? '/driver/dashboard' : '/passenger/dashboard';
+    };
 
     return (
         <>
@@ -59,7 +60,7 @@ export default function NavbarClient() {
                 >
                     About
                 </Link>
-                {user ? (
+                {isAuthenticated ? (
                     <>
                         <Link
                             href="/settings"
@@ -69,7 +70,7 @@ export default function NavbarClient() {
                             Settings
                         </Link>
                         <Link
-                            href="/dashboard"
+                            href={getDashboardLink()}
                             className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                         >
                             Dashboard
@@ -144,7 +145,7 @@ export default function NavbarClient() {
                                 >
                                     About
                                 </Link>
-                                {user ? (
+                                {isAuthenticated ? (
                                     <>
                                         <Link
                                             href="/settings"
@@ -155,7 +156,7 @@ export default function NavbarClient() {
                                             Settings
                                         </Link>
                                         <Link
-                                            href="/dashboard"
+                                            href={getDashboardLink()}
                                             className="block px-4 py-3 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
                                             onClick={() => setIsOpen(false)}
                                         >

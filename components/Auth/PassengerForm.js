@@ -8,12 +8,14 @@ import { FaFacebook } from 'react-icons/fa';
 import FormInput from './FormInput';
 import { showToast } from '@/utils/toast';
 import { useRouter } from 'next/navigation';
+import useAuthStore from '@/store/authStore';
 
 export default function PassengerForm() {
     const router = useRouter();
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register: formRegister, handleSubmit, formState: { errors } } = useForm();
     const [isLoading, setIsLoading] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
+    const { register } = useAuthStore();
 
     useEffect(() => {
         setIsMounted(true);
@@ -21,18 +23,38 @@ export default function PassengerForm() {
 
     const onSubmit = async (data) => {
         try {
-            // Show loading toast
-            const loadingToast = showToast.loading('Creating your account...');
+            console.log('Form submission started with data:', { ...data, password: '[REDACTED]' });
+            setIsLoading(true);
 
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Prepare user data
+            const userData = {
+                username: data.email.split('@')[0], // Generate username from email
+                email: data.email,
+                password: data.password,
+                re_password: data.password, // Required by backend
+                first_name: data.firstName.trim(),
+                last_name: data.lastName.trim(),
+                phone_number: data.phone,
+                role: 'passenger'
+            };
 
-            // Success
-            showToast.dismiss(loadingToast);
-            showToast.success('Account created successfully!');
-            router.push('/login');
+            console.log('Calling register with userData:', { ...userData, password: '[REDACTED]' });
+
+            // Call registration function
+            const result = await register(userData);
+            console.log('Registration result:', result);
+
+            if (result.success) {
+                if (result.loginError) {
+                    router.push('/login');
+                } else {
+                    router.push('/passenger/dashboard');
+                }
+            }
         } catch (error) {
-            showToast.error('Failed to create account. Please try again.');
+            console.error('Registration error:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -90,20 +112,59 @@ export default function PassengerForm() {
                     </div>
 
                     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-                        <FormInput
-                            id="fullName"
-                            label="Full Name"
-                            register={register('fullName', { required: 'Full name is required' })}
-                            error={errors.fullName?.message}
-                            placeholder="John Doe"
-                            className="bg-background"
-                        />
+                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                            <FormInput
+                                id="firstName"
+                                label="First Name"
+                                register={formRegister('firstName', {
+                                    required: 'First name is required',
+                                    pattern: {
+                                        value: /^[A-Za-z\s-']+$/,
+                                        message: 'First name can only contain letters, spaces, hyphens, and apostrophes'
+                                    },
+                                    minLength: {
+                                        value: 2,
+                                        message: 'First name must be at least 2 characters'
+                                    },
+                                    maxLength: {
+                                        value: 50,
+                                        message: 'First name cannot exceed 50 characters'
+                                    }
+                                })}
+                                error={errors.firstName?.message}
+                                placeholder="John"
+                                className="bg-background"
+                            />
+
+                            <FormInput
+                                id="lastName"
+                                label="Last Name"
+                                register={formRegister('lastName', {
+                                    required: 'Last name is required',
+                                    pattern: {
+                                        value: /^[A-Za-z\s-']+$/,
+                                        message: 'Last name can only contain letters, spaces, hyphens, and apostrophes'
+                                    },
+                                    minLength: {
+                                        value: 2,
+                                        message: 'Last name must be at least 2 characters'
+                                    },
+                                    maxLength: {
+                                        value: 50,
+                                        message: 'Last name cannot exceed 50 characters'
+                                    }
+                                })}
+                                error={errors.lastName?.message}
+                                placeholder="Doe"
+                                className="bg-background"
+                            />
+                        </div>
 
                         <FormInput
                             id="email"
                             label="Email address"
                             type="email"
-                            register={register('email', {
+                            register={formRegister('email', {
                                 required: 'Email is required',
                                 pattern: {
                                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
@@ -119,7 +180,7 @@ export default function PassengerForm() {
                             id="phone"
                             label="Phone number"
                             type="tel"
-                            register={register('phone', {
+                            register={formRegister('phone', {
                                 required: 'Phone number is required',
                                 pattern: {
                                     value: /^[0-9]{11}$/,
@@ -135,7 +196,7 @@ export default function PassengerForm() {
                             id="password"
                             label="Password"
                             type="password"
-                            register={register('password', {
+                            register={formRegister('password', {
                                 required: 'Password is required',
                                 minLength: {
                                     value: 8,

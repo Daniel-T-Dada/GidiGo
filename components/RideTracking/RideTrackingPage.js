@@ -11,7 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import { useStore } from '@/store/useStore';
+import useAuthStore from '@/store/authStore';
 import { showToast } from '@/utils/toast';
 import { usePusher } from '@/hooks/usePusher';
 
@@ -31,7 +31,7 @@ export default function RideTrackingPage({ bookingId }) {
     const [rideDetails, setRideDetails] = useState(null);
     const [driverLocation, setDriverLocation] = useState(null);
     const pusher = usePusher();
-    const { setActiveRide, clearActiveRide } = useStore();
+    const { currentRide, setCurrentRide } = useAuthStore();
 
     useEffect(() => {
         setMounted(true);
@@ -77,7 +77,7 @@ export default function RideTrackingPage({ bookingId }) {
 
                 setRideDetails(mockRideDetails);
                 setDriverLocation(mockRideDetails.driver.location);
-                setActiveRide(mockRideDetails);
+                setCurrentRide(mockRideDetails);
 
                 // Only subscribe to Pusher if it's available
                 if (pusher && mounted) {
@@ -93,7 +93,7 @@ export default function RideTrackingPage({ bookingId }) {
                         channel.bind('ride-completed', () => {
                             if (mounted) {
                                 showToast.success('Ride completed!');
-                                clearActiveRide();
+                                setCurrentRide(null);
                                 router.push('/passenger/dashboard');
                             }
                         });
@@ -101,7 +101,7 @@ export default function RideTrackingPage({ bookingId }) {
                         channel.bind('ride-cancelled', () => {
                             if (mounted) {
                                 showToast.error('Ride was cancelled');
-                                clearActiveRide();
+                                setCurrentRide(null);
                                 router.push('/passenger/dashboard');
                             }
                         });
@@ -127,7 +127,7 @@ export default function RideTrackingPage({ bookingId }) {
                 }
             }
         };
-    }, [mounted, bookingId, pusher, router, setActiveRide, clearActiveRide]);
+    }, [mounted, bookingId, pusher, router, setCurrentRide]);
 
     const handleBack = useCallback(() => router.back(), [router]);
     const handleGoHome = useCallback(() => router.push('/passenger/dashboard'), [router]);

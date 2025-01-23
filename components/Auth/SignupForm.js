@@ -7,42 +7,59 @@ import { useRouter } from 'next/navigation';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
 import FormInput from './FormInput';
-import { registerUser, saveUserSession } from '@/mockData/users';
+import useAuthStore from '@/store/authStore';
+import { showToast } from '@/utils/toast';
 
 export default function SignupForm({ role, onBack }) {
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const [isLoading, setIsLoading] = useState(false);
     const [signupError, setSignupError] = useState('');
     const router = useRouter();
+    const { register: registerUser } = useAuthStore();
 
     const onSubmit = async (data) => {
+        console.log('Form submitted with data:', { ...data, password: '[REDACTED]' });
         setIsLoading(true);
         setSignupError('');
         try {
             const userData = {
-                ...data,
-                role,
+                username: data.username,
+                email: data.email,
+                password: data.password,
+                re_password: data.confirmPassword,
+                first_name: data.firstName,
+                last_name: data.lastName,
+                role: role,
+                phone_number: data.phone,
                 ...(role === 'driver' && {
-                    vehicleDetails: {
-                        make: data.vehicleMake,
-                        model: data.vehicleModel,
-                        year: data.vehicleYear,
-                        plateNumber: data.plateNumber
-                    }
+                    vehicle_make: data.vehicleMake,
+                    vehicle_model: data.vehicleModel,
+                    vehicle_year: data.vehicleYear,
+                    license_plate: data.plateNumber
                 })
             };
 
+            console.log('Prepared userData:', { ...userData, password: '[REDACTED]' });
+            console.log('Role from props:', role);
+
             const result = await registerUser(userData);
+            console.log('Registration result:', result);
+
             if (result.success) {
-                saveUserSession(result.user);
-                // Redirect based on user role
-                router.push(role === 'passenger' ? '/dashboard' : '/dashboard');
+                console.log('Registration successful, redirecting to dashboard');
+                // Redirect based on role
+                if (result.user.role === 'driver') {
+                    router.push('/driver/dashboard');
+                } else {
+                    router.push('/passenger/dashboard');
+                }
             } else {
-                setSignupError(result.error);
+                console.error('Registration failed with result:', result);
+                setSignupError(result.error || 'Registration failed. Please try again.');
             }
         } catch (error) {
-            console.error('Registration failed:', error);
-            setSignupError('An unexpected error occurred. Please try again.');
+            console.error('Registration error:', error);
+            setSignupError(error.message || 'Registration failed. Please try again.');
         } finally {
             setIsLoading(false);
         }
@@ -89,15 +106,43 @@ export default function SignupForm({ role, onBack }) {
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                        <FormInput
+                            id="firstName"
+                            label="First Name"
+                            type="text"
+                            register={register('firstName', {
+                                required: 'First name is required',
+                            })}
+                            error={errors.firstName?.message}
+                            placeholder="John"
+                        />
+
+                        <FormInput
+                            id="lastName"
+                            label="Last Name"
+                            type="text"
+                            register={register('lastName', {
+                                required: 'Last name is required',
+                            })}
+                            error={errors.lastName?.message}
+                            placeholder="Doe"
+                        />
+                    </div>
+
                     <FormInput
-                        id="fullName"
-                        label="Full Name"
+                        id="username"
+                        label="Username"
                         type="text"
-                        register={register('fullName', {
-                            required: 'Full name is required',
+                        register={register('username', {
+                            required: 'Username is required',
+                            pattern: {
+                                value: /^[a-zA-Z0-9_]+$/,
+                                message: 'Username can only contain letters, numbers, and underscores',
+                            },
                         })}
-                        error={errors.fullName?.message}
-                        placeholder="John Doe"
+                        error={errors.username?.message}
+                        placeholder="johndoe123"
                     />
 
                     <FormInput
@@ -142,6 +187,22 @@ export default function SignupForm({ role, onBack }) {
                             },
                         })}
                         error={errors.password?.message}
+                        placeholder="••••••••"
+                    />
+
+                    <FormInput
+                        id="confirmPassword"
+                        label="Confirm Password"
+                        type="password"
+                        register={register('confirmPassword', {
+                            required: 'Please confirm your password',
+                            validate: (val) => {
+                                if (watch('password') != val) {
+                                    return "Passwords do not match";
+                                }
+                            },
+                        })}
+                        error={errors.confirmPassword?.message}
                         placeholder="••••••••"
                     />
 
@@ -213,8 +274,8 @@ export default function SignupForm({ role, onBack }) {
                             className={`
                                 inline-flex justify-center py-2.5 px-8 border border-transparent 
                                 rounded-md shadow-sm text-sm font-medium text-white 
-                                bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 
-                                focus:ring-offset-2 focus:ring-blue-500 transition-colors
+                                bg-primary hover:bg-accent focus:outline-none focus:ring-2 
+                                focus:ring-offset-2 focus:ring-primary transition-colors
                                 ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}
                             `}
                         >

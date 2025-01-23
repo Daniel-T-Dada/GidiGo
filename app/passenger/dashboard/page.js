@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useStore } from '@/store/useStore';
+import useAuthStore from '@/store/authStore';
 import PassengerDashboard from '@/components/Dashboard/PassengerDashboard';
 
 export default function PassengerDashboardPage() {
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
-    const { user } = useStore();
+    const user = useAuthStore((state) => state.user);
 
     useEffect(() => {
         if (!user) {

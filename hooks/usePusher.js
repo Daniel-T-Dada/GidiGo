@@ -1,71 +1,84 @@
-import { useState, useEffect } from 'react';
-import Pusher from 'pusher-js';
+import { useEffect, useRef } from 'react';
+import { getPusherClient } from '@/lib/pusher';
+import useAuthStore from '@/store/authStore';
 
-// Use test credentials if env vars are not set
-const PUSHER_KEY = process.env.NEXT_PUBLIC_PUSHER_KEY || '2122170';
-const PUSHER_CLUSTER = process.env.NEXT_PUBLIC_PUSHER_CLUSTER || 'ap1';
-
-export function usePusher() {
-    const [pusher, setPusher] = useState(null);
+export function usePusher(channelName, eventName, callback) {
+    const { isAuthenticated, user } = useAuthStore();
+    const channelRef = useRef(null);
 
     useEffect(() => {
-        if (typeof window === 'undefined') return; // Prevent SSR issues
-
-        let pusherClient;
-        try {
-            // Initialize Pusher with enhanced configuration
-            pusherClient = new Pusher(PUSHER_KEY, {
-                cluster: PUSHER_CLUSTER,
-                forceTLS: true,
-                enabledTransports: ['ws', 'wss'],
-                wsHost: `ws-${PUSHER_CLUSTER}.pusher.com`,
-                httpHost: `sockjs-${PUSHER_CLUSTER}.pusher.com`,
-                disableStats: true,
-                enableStats: false,
-                timeout: 20000, // Increase timeout to 20 seconds
-                activityTimeout: 120000, // Increase activity timeout to 2 minutes
-                pongTimeout: 60000, // Increase pong timeout to 1 minute
-            });
-
-            // Handle connection success
-            pusherClient.connection.bind('connected', () => {
-                console.log('Connected to Pusher');
-            });
-
-            // Handle connection error
-            pusherClient.connection.bind('error', (err) => {
-                console.error('Pusher connection error:', err);
-                // Attempt to reconnect on error
-                if (pusherClient && pusherClient.connection.state === 'disconnected') {
-                    pusherClient.connect();
-                }
-            });
-
-            // Handle disconnection
-            pusherClient.connection.bind('disconnected', () => {
-                console.log('Disconnected from Pusher');
-                // Attempt to reconnect when disconnected
-                if (pusherClient) {
-                    pusherClient.connect();
-                }
-            });
-
-            setPusher(pusherClient);
-        } catch (error) {
-            console.error('Error initializing Pusher:', error);
+        // Only proceed if we have authentication and a user
+        if (!isAuthenticated || !user) {
+            console.log('Pusher: No authenticated user, skipping subscription');
+            return;
         }
 
-        // Cleanup on unmount
-        return () => {
-            if (pusherClient) {
+        if (!channelName || !eventName || !callback) {
+            console.warn('Pusher: Missing required parameters', { channelName, eventName });
+            return;
+        }
+
+        let client;
+        try {
+            client = getPusherClient();
+        } catch (error) {
+            console.warn('Pusher client initialization failed:', error);
+            return;
+        }
+
+        // If client initialization failed, exit early
+        if (!client) {
+            console.warn('Pusher client not available. Real-time updates will be disabled.');
+            return;
+        }
+
+        // Create channel name with user ID for private channels
+        const fullChannelName = channelName.startsWith('private-')
+            ? `${channelName}${user.id}`
+            : channelName;
+
+        let channel;
+        try {
+            // Subscribe to channel
+            channel = client.subscribe(fullChannelName);
+            channelRef.current = channel;
+
+            // Bind to event
+            channel.bind(eventName, callback);
+
+            console.log(`Successfully subscribed to channel: ${fullChannelName}`);
+        } catch (error) {
+            console.error('Error in Pusher subscription:', error);
+            // Attempt cleanup if subscription failed
+            if (channel) {
                 try {
-                    pusherClient.disconnect();
+                    client.unsubscribe(fullChannelName);
+                } catch (cleanupError) {
+                    console.error('Error cleaning up failed subscription:', cleanupError);
+                }
+            }
+            return;
+        }
+
+        // Cleanup on unmount or when dependencies change
+        return () => {
+            if (channelRef.current) {
+                try {
+                    channelRef.current.unbind(eventName);
+                    client.unsubscribe(fullChannelName);
+                    console.log(`Successfully unsubscribed from channel: ${fullChannelName}`);
                 } catch (error) {
-                    console.error('Error disconnecting Pusher:', error);
+                    console.error('Error cleaning up Pusher subscription:', error);
                 }
             }
         };
-    }, []);
+    }, [isAuthenticated, user, channelName, eventName, callback]);
 
-    return pusher;
-} 
+    return channelRef.current;
+}
+
+export function usePrivateChannel(channelName, eventName, callback) {
+    return usePusher(`private-${channelName}`, eventName, callback);
+}
+
+export default usePusher; 

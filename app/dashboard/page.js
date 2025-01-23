@@ -2,11 +2,11 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useStore } from '@/store/useStore';
+import useAuthStore from '@/store/authStore';
 
 export default function DashboardPage() {
     const router = useRouter();
-    const { user } = useStore();
+    const { user } = useAuthStore();
 
     useEffect(() => {
         if (!user) {
